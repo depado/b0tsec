@@ -16,8 +16,18 @@ from datetime import datetime
 from constants import *
 from functions import *
 
+def pdump(datasource, filename):
+    pickle.dump(datasource, open(filename, "wb"))
+
+def pload(filename):
+    try:
+        return pickle.load(open(filename, 'rb'))
+    except (FileNotFoundError, OSError) as error:
+        return {}
+
 
 class BotModeration(irc.bot.SingleServerIRCBot):
+
     def __init__(self):
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], botname, botname)
 
@@ -28,66 +38,16 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         self.basic = basics
         self.extra = extra
 
-        try:
-            self.buglist = pickle.load(open("buglist.p", "rb"))
-        except (FileNotFoundError, OSError) as error:
-            print(error)
-            self.buglist = {}
-
-        try:
-            self.deathlist = pickle.load(open("deathlist.p", "rb"))
-        except (FileNotFoundError, OSError) as error:
-            print(error)
-            self.deathlist = {}
-
-        try:
-            self.ctf = pickle.load(open("ctf.p", "rb"))
-        except (FileNotFoundError, OSError) as error:
-            print(error)
-            self.ctf = {}
-
-        try:
-            self.idle = pickle.load(open("idle.p", "rb"))
-        except (FileNotFoundError, OSError) as error:
-            print(error)
-            self.idle = {}
+        self.buglist   = pload('buglist.p')
+        self.deathlist = pload('deathlist.p')
+        self.ctf       = pload('ctf.p')
+        self.idle      = pload('idle.p')
 
     def on_welcome(self, serv, ev):
-        serv.privmsg("NickServ", "identify tvjhnqn4764")
+        with open('ircpwd') as pwd:
+            connection_string = "identify {}".format(pwd.read())
+            serv.privmsg("NickServ", connection_string)
         serv.join(chan)
-
-        @periodic_task(60)
-        def tasked():
-            data = urllib.request.urlopen('https://tools.intrepid-linux.info/bbs/json').read().decode("utf-8")
-            thread_dict = json.loads(data)
-            try:
-                saved_dict = pickle.load(open("thread_dict.p", "rb"))
-                if thread_dict['thread_number'] != saved_dict['thread_number']:
-                    diff = thread_dict['thread_number']-saved_dict['thread_number']
-                    if diff > 1:
-                        message = "{} New Threads on the BBS".format(diff)
-                    else:
-                        message = "One New Thread on the BBS : {}".format(thread_dict['threads'][str(thread_dict['thread_number'])]['url'])
-                    serv.privmsg(chan, message)
-                    pickle.dump(thread_dict, open("thread_dict.p", "wb"))
-
-                if thread_dict['comment_number'] != saved_dict['comment_number']:
-                    for new_id in thread_dict['threads'].keys():
-                        for saved_id in saved_dict['threads'].keys():
-                            if new_id == saved_id:
-                                unique_id = new_id
-                                diff = thread_dict['threads'][unique_id]['comments'] - saved_dict['threads'][unique_id]['comments']
-                                if diff == 1:
-                                    m_bit = "One New Comment"
-                                elif diff > 1:
-                                    m_bit = "{} New Comments".format(diff)
-                                else:
-                                    continue
-                                serv.privmsg(chan, "{} on Thread {}".format(m_bit, thread_dict['threads'][unique_id]['url']))
-                    pickle.dump(thread_dict, open("thread_dict.p", "wb"))
-            except FileNotFoundError:
-                pickle.dump(thread_dict, open("thread_dict.p", "wb"))
-        tasked()
 
     def on_kick(self, serv, ev):
         serv.join(chan)
@@ -122,21 +82,6 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         if command == "!buglist":
             for auteur in self.buglist.keys():
                 serv.privmsg(chan, "{} : {}".format(auteur, self.buglist[auteur]))
-
-        if command == "!dumpbug":
-            if auteur == "Depado":
-                self.buglist = {}
-                pickle.dump(self.buglist, open("buglist.p", "wb"))
-                serv.privmsg(chan, "Dumped all the bugs :)")
-            else:
-                serv.privmsg(chan, "You're not my master.")
-
-        if command == "!help":
-            serv.privmsg(auteur, "[optionnal argument] <needed argument>")
-            serv.privmsg(auteur, "!beer [someone]; !drug ; !nom ; !smoke ; !coffee")
-            serv.privmsg(auteur, "!afk [message] ; !afklist ; !back")
-            serv.privmsg(auteur, "!export ; !dirtylinks ['random'] ; !femops")
-            serv.privmsg(auteur, "!eightball [question] ; !roulette ; !sentence <your sentence>")
 
         if command in self.basic.keys():
             serv.privmsg(chan, "{} {}".format(auteur, self.basic[command]))
@@ -213,7 +158,6 @@ class BotModeration(irc.bot.SingleServerIRCBot):
             except Exception as e:
                 serv.privmsg(auteur, "Couldn't paste myself. Running on a shitty connection sorry.")
 
-
         if command == "!dirtylinks":
             if len(argmessage) > 1:
                 if argmessage[1] == "random":
@@ -222,13 +166,6 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                 serv.privmsg(chan, "List of dirty links of #n0sec")
                 for link in links:
                     serv.privmsg(chan, link)
-
-        if command == "!reload":
-            if auteur == "Depado":
-                serv.privmsg(auteur, "{} wants me to reload myself. Be right back.".format(auteur))
-                sys.exit(2)
-            else:
-                serv.privmsg(auteur, "You're not my master.")
 
         if command == "!sentence":
             url = "http://translate.google.com/translate_tts?tl=fr&q="
@@ -244,9 +181,9 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                 afk[auteur] = message
                 serv.privmsg(chan, "{} is afk : {}".format(auteur, message))
             else:
-                afk[auteur] = "Is away"
+                afk[auteur] = "Away (no message provided)"
                 serv.privmsg(chan, "{} is afk.".format(auteur))
-            pickle.dump(afk, open("afk.p", "wb"))
+            pdump(afk, 'afk.p')
 
         if command == "!afklist":
             if len(afk) > 0:
