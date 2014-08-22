@@ -42,6 +42,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         self.deathlist = pload('deathlist.p')
         self.ctf       = pload('ctf.p')
         self.idle      = pload('idle.p')
+        self.afk       = pload('afk.p')
 
     def on_welcome(self, serv, ev):
         with open('ircpwd') as pwd:
@@ -57,10 +58,10 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         command = argmessage[0]
         auteur = ev.source.nick
 
-        if auteur in afk.keys():
-            del afk[auteur]
+        if auteur in self.afk.keys():
+            del self.afk[auteur]
             serv.privmsg(chan, "{} is back.".format(auteur))
-            pickle.dump(afk, open("afk.p", "wb"))
+            pickle.dump(self.afk, open("afk.p", "wb"))
 
         self.idle[auteur] = datetime.now()
         pickle.dump(self.idle, open("idle.p", "wb"))
@@ -178,34 +179,19 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         if command == "!afk":
             if len(argmessage) > 1:
                 message = " ".join(argmessage[1:])
-                afk[auteur] = message
+                self.afk[auteur] = message
                 serv.privmsg(chan, "{} is afk : {}".format(auteur, message))
             else:
-                afk[auteur] = "Away (no message provided)"
+                self.afk[auteur] = "Away (no message provided)"
                 serv.privmsg(chan, "{} is afk.".format(auteur))
-            pdump(afk, 'afk.p')
+            pdump(self.afk, 'afk.p')
 
         if command == "!afklist":
-            if len(afk) > 0:
-                for key in afk.keys():
-                    serv.privmsg(chan, "{auteur} : {message}".format(auteur=key, message=afk[key]))
+            if len(self.afk) > 0:
+                for key in self.afk.keys():
+                    serv.privmsg(chan, "{auteur} : {message}".format(auteur=key, message=self.afk[key]))
             else:
                 serv.privmsg(chan, "No one is afk right now.")
-
-        if command == "!up":
-            if len(argmessage) < 2:
-                serv.privmsg(chan, "This command requires an argument.")
-            else:
-                try:
-                    host = argmessage[1]
-                    request = urllib.request.Request("http://www.downforeveryoneorjustme.com/{}".format(host))
-                    response = self.opener.open(request)
-                    if "It's just you" in response.read().decode('utf-8'):
-                        serv.privmsg(chan, "Host {} is Up.".format(host))
-                    else:
-                        serv.privmsg(chan, "Host {} is Down".format(host))
-                except Exception as e:
-                    serv.privmsg(chan, "Stop playing with my encoding, bitch !")
 
         if command == "!shorten":
             if len(argmessage) < 2:
@@ -248,13 +234,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                 serv.privmsg(chan, "{} is going to fap.".format(auteur))
             elif len(argmessage) == 2:
                 if argmessage[1].lower() == auteur.lower():
-                    serv.privmsg(chan, "INCEPTION ! END OF THE WORLD IN 3...")
-                    time.sleep(1)
-                    serv.privmsg(chan, "2...")
-                    time.sleep(1)
-                    serv.privmsg(chan, "1...")
-                    time.sleep(1)
-                    serv.privmsg(chan, "Just kidding. {} is gay. And so is tanael.".format(auteur))
+                    serv.privmsg(chan, "{} is going to fap.".format(auteur))
                 else:
                     serv.privmsg(chan, "{} is fapping {}".format(auteur, argmessage[1]))
             elif len(argmessage) == 3:
@@ -278,6 +258,19 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                 serv.privmsg(chan, "Fataloror frappe toute la room d'un coup de nichons !")
             else:
                 serv.privmsg(chan, "YOU GOT NO BOOBIES YOU CAN'T DO THAT !")
+
+        if command in ["!strpn", "!strapon"]:
+            if len(argmessage) < 2:
+                if random.random() < 0.2:
+                    serv.privmsg(chan, "{} uses a strapon on the whole room. BAM STRAPON !".format(auteur))
+                else:
+                    serv.privmsg(chan, "{} attempt to use a strapon failed. Critical Failure.".format(auteur))
+            else:
+                if random.random() < 0.5:
+                    serv.privmsg(chan, "{} uses a strapon on {}. Critical Hit ! BAM STRAPON !".format(auteur, argmessage[1]))
+                else:
+                    serv.privmsg(chan, "{} attempt to use a strapon on {} failed. Critical Failure.".format(auteur, argmessage[1]))
+
 
 if __name__ == "__main__":
     BotModeration().start()

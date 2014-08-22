@@ -35,3 +35,20 @@ def tasked():
     except FileNotFoundError:
         pickle.dump(thread_dict, open("thread_dict.p", "wb"))
 tasked()
+
+
+# NOT WORKING OUT OF server_bot.py !
+if command == "!up":
+    if len(argmessage) < 2:
+        serv.privmsg(chan, "This command requires an argument.")
+    else:
+        try:
+            host = argmessage[1]
+            request = urllib.request.Request("http://www.downforeveryoneorjustme.com/{}".format(host))
+            response = self.opener.open(request)
+            if "It's just you" in response.read().decode('utf-8'):
+                serv.privmsg(chan, "Host {} is Up.".format(host))
+            else:
+                serv.privmsg(chan, "Host {} is Down".format(host))
+        except Exception as e:
+            serv.privmsg(chan, "Stop playing with my encoding, bitch !")

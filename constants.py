@@ -13,12 +13,6 @@ try:
 except Exception as e:
     print(e)
 
-try:
-    afk = pickle.load(open("afk.p", "rb" ))
-except Exception as e:
-    print(e)
-    afk = {}
-
 roulette_achievements = {
                           5:"It's ok to cry",
                           10:"Depressive Player",
