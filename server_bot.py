@@ -50,6 +50,8 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         self.idle      = pload('idle.p')
         self.afk       = pload('afk.p')
 
+        print("Running.")
+
     def on_welcome(self, serv, ev):
         with open('ircpwd') as pwd:
             connection_string = "identify {}".format(pwd.read())
@@ -60,7 +62,6 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         serv.join(chan)
 
     def on_pubmsg(self, serv, ev):
-        argmessage   = ev.arguments[0].split(" ")
         command      = ev.arguments[0].split(" ")[0]
         command_args = ev.arguments[0].split(" ")[1:] if len(ev.arguments[0].split(" ")) > 1 else []
         author       = ev.source.nick
@@ -196,8 +197,8 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                     serv.privmsg(author, "Couldn't paste myself.")
 
             elif command == "!dirtylinks":
-                if len(argmessage) > 1:
-                    if argmessage[1] == "random":
+                if len(command_args) > 0:
+                    if command_args[0] in ['-r', '--random']:
                         serv.privmsg(chan, links[random.randint(0, len(links))])
                 else:
                     serv.privmsg(chan, "List of dirty links of #n0sec")
@@ -206,68 +207,68 @@ class BotModeration(irc.bot.SingleServerIRCBot):
 
             elif command == "!sentence":
                 url = "http://translate.google.com/translate_tts?tl=fr&q="
-                x = '%20'.join(argmessage[1:])
+                x = '%20'.join(command_args)
                 url = url+x
                 short = shorten(url)
                 if short:
                     serv.privmsg(chan, "Synthese Vocale : {}".format(short))
 
             elif command == "!shorten":
-                if len(argmessage) < 2:
-                    serv.privmsg(author, "This command requires an argument.")
-                else:
-                    url = argmessage[1]
+                if len(command_args) > 0:
+                    url = command_args[0]
                     short = shorten(url)
                     if short:
                         serv.privmsg(chan, "{}".format(short))
+                else:
+                    serv.privmsg(author, "This command requires an argument.")
 
             elif command == "!gay":
-                if len(argmessage) < 2:
+                if not command_args:
                     serv.privmsg(chan, "{} is gay !".format(author))
-                elif len(argmessage) == 2:
-                    serv.privmsg(chan, "{} is gay !".format(argmessage[1]))
+                elif len(command_args) == 1:
+                    serv.privmsg(chan, "{} is gay !".format(command_args[0]))
                 else:
-                    serv.privmsg(chan, "{} are gay !".format(" ".join(argmessage[1:])))
+                    serv.privmsg(chan, "{} are gay !".format(" ".join(command_args)))
 
             elif command == "!fap":
-                if len(argmessage) < 2:
+                if not command_args:
                     serv.privmsg(chan, "{} is going to fap.".format(author))
-                elif len(argmessage) == 2:
-                    if argmessage[1].lower() == author.lower():
+                elif len(command_args) == 1:
+                    if command_args[0].lower() == author.lower():
                         serv.privmsg(chan, "{} is going to fap.".format(author))
                     else:
-                        serv.privmsg(chan, "{} is fapping {}".format(author, argmessage[1]))
-                elif len(argmessage) == 3:
-                    serv.privmsg(chan, "{} is fapping {} and {} with both hands".format(author, argmessage[1], argmessage[2]))
+                        serv.privmsg(chan, "{} is fapping {}".format(author, command_args[0]))
+                elif len(command_args) == 2:
+                    serv.privmsg(chan, "{} is fapping {} and {} with both hands".format(author, command_args[0], command_args[1]))
                 else:
                     serv.privmsg(chan, "{}, you don't have more than two hands, you bitch !".format(author))
 
             elif command == "!idle":
-                if len(argmessage) < 2:
+                if not command_args:
                     serv.privmsg(author, "This command requires an argument.")
-                elif len(argmessage) == 2:
-                    if self.idle.get(argmessage[1], None) is not None:
-                        idle_time = self.idle[argmessage[1]]
-                        serv.privmsg(chan, "{} has been idle for {}".format(argmessage[1],
+                elif len(command_args) == 1:
+                    if self.idle.get(command_args[0], None) is not None:
+                        idle_time = self.idle[command_args[0]]
+                        serv.privmsg(chan, "{} has been idle for {}".format(command_args[0],
                                                                             str(datetime.now() - idle_time)[:-7]))
                     else:
-                        serv.privmsg(chan, "Never saw {} or didn't registered his/her last message.".format(argmessage[1]))
+                        serv.privmsg(chan, "Never saw {} or didn't registered his/her last message.".format(command_args[0]))
 
             elif command == "!nifle":
                 if author == "Fataloror":
                     serv.privmsg(chan, "Fataloror frappe toute la room d'un coup de nichons !")
 
             elif command in ["!strpn", "!strapon"]:
-                if len(argmessage) < 2:
+                if not command_args:
                     if random.random() < 0.2:
                         serv.privmsg(chan, "{} uses a strapon on the whole room. BAM STRAPON !".format(author))
                     else:
-                        serv.privmsg(chan, "{} attempt to use a strapon failed. Critical Failure.".format(author))
+                        serv.privmsg(chan, "{} attempt to use a strapon failed. Fumble.".format(author))
                 else:
                     if random.random() < 0.5:
-                        serv.privmsg(chan, "{} uses a strapon on {}. Critical Hit ! BAM STRAPON !".format(author, argmessage[1]))
+                        serv.privmsg(chan, "{} uses a strapon on {}. Critical Hit ! BAM STRAPON !".format(author, command_args[0]))
                     else:
-                        serv.privmsg(chan, "{} attempt to use a strapon on {} failed. Critical Failure.".format(author, argmessage[1]))
+                        serv.privmsg(chan, "{}'s attempt to use a strapon on {} failed. Fumble.".format(author, command_args[0]))
 
 
 if __name__ == "__main__":
