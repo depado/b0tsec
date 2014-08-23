@@ -13,6 +13,25 @@ try:
 except Exception as e:
     print(e)
 
+activated_commands = [
+  '!bug', 
+  '!femops',
+  '!eightball',
+  '!roulette',
+  '!export',
+  '!dirtylinks',
+  '!sentence',
+  '!afk',
+  '!afklist',
+  '!shorten',
+  '!gay',
+  '!fap',
+  '!idle',
+  '!nifle',
+  '!strpn',
+  '!strapon'
+]
+
 roulette_achievements = {
                           5:"It's ok to cry",
                           10:"Depressive Player",
@@ -49,11 +68,6 @@ links = [
           "http://www.specialfriedrice.net/",
           "http://www.meatspin.cc/"
         ]
-
-trolls = [
-           "Python is better than perl.",
-           "Do you accept Jesus Christ as your savior and lord ?",
-         ]
 
 basics = {
            "!nom":"is going to eat.",
