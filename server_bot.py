@@ -18,6 +18,7 @@ from constants import *
 from functions import *
 
 def pdump(datasource, filename):
+    try:
     pickle.dump(datasource, open('pickles/{}'.format(filename), 'wb'))
 
 def pload(filename):
@@ -49,8 +50,6 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         self.ctf       = pload('ctf.p')
         self.idle      = pload('idle.p')
         self.afk       = pload('afk.p')
-
-        print("Running.")
 
     def on_welcome(self, serv, ev):
         with open('ircpwd') as pwd:
@@ -278,11 +277,11 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                         serv.privmsg(chan, "{} is not in a swallowing mode. Critical fellure.".format(author))
                 else:
                     if random.random() < 0.5:
-                        serv.privmsg(chan, "{} gets his tong out, and makes a little wink to {}. CUM ON ME !".format(command_args[0],author))
+                        serv.privmsg(chan, "{} gets his tong out, and makes a little wink to {}. CUM ON ME !".format(command_args[0], author))
                     elif 'Depado' in command_args:
                         serv.privmsg(chan, "Depado doesn't suck, but his butthole is always open for everyone !")
                     else:
-                        serv.privmsg(chan, "{} is saying,  not now, thanks".format(command_args=[0]))
+                        serv.privmsg(chan, "{} is saying,  not now, thanks".format(command_args[0]))
 
 
 
