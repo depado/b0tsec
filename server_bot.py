@@ -270,6 +270,21 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                     else:
                         serv.privmsg(chan, "{}'s attempt to use a strapon on {} failed. Fumble.".format(author, command_args[0]))
 
+            elif command in ["!bj", "!blowjob"]:
+                if not command_args:
+                    if random.random() < 0.2:
+                        serv.privmsg(chan, "{} gets on his knees, opens his mouth and blows the entire room. You big coquinou !".format(author))
+                    else:
+                        serv.privmsg(chan, "{} is not in a swallowing mode. Critical fellure.".format(author))
+                else:
+                    if random.random() < 0.5:
+                        serv.privmsg(chan, "{} gets his tong out, and makes a little wink to {}. CUM ON ME !".format(command_args[0],author))
+                    elif 'Depado' in command_args:
+                        serv.privmsg(chan, "Depado doesn't suck, but his butthole is always open for everyone !")
+                    else:
+                        serv.privmsg(chan, "{} is saying,  not now, thanks".format(command_args=[0]))
+
+
 
 if __name__ == "__main__":
     BotModeration().start()
