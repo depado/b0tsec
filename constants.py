@@ -29,7 +29,9 @@ activated_commands = [
   '!idle',
   '!nifle',
   '!strpn',
-  '!strapon'
+  '!strapon',
+  '!bj',
+  '!blowjob'
 ]
 
 roulette_achievements = {
