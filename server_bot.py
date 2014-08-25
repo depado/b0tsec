@@ -19,7 +19,9 @@ from functions import *
 
 def pdump(datasource, filename):
     try:
-    pickle.dump(datasource, open('pickles/{}'.format(filename), 'wb'))
+        pickle.dump(datasource, open('pickles/{}'.format(filename), 'wb'))
+    except (FileNotFoundError, OSError) as error:
+        print("Unable to dump !")
 
 def pload(filename):
     try:
