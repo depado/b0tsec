@@ -78,7 +78,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         pdump(self.idle, "idle.p")
 
         # Avoid single checks for message that doesn't start with an activated command
-        if command in activated_commands:
+        if command in activated_commands or command in self.basic.keys() or command in self.extra.keys():
             if command == "!afk":
                 if len(command_args) > 0:
                     message = " ".join(command_args)
