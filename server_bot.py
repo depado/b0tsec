@@ -14,6 +14,7 @@ import urllib.parse
 import time
 from datetime import datetime
 
+from settings import *
 from constants import *
 from functions import *
 
