@@ -206,6 +206,11 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                     for link in links:
                         serv.privmsg(chan, link)
 
+            elif command == "!daddy":
+                serv.privmsg(chan, "My daddys are:")
+                for dad  in daddys:
+                    serv.privmsg(chan, dad)
+
             elif command == "!sentence":
                 url = "http://translate.google.com/translate_tts?tl=fr&q="
                 x = '%20'.join(command_args)

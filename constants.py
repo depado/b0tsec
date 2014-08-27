@@ -31,7 +31,8 @@ activated_commands = [
   '!strpn',
   '!strapon',
   '!bj',
-  '!blowjob'
+  '!blowjob',
+  '!daddy'
 ]
 
 roulette_achievements = {
@@ -70,6 +71,11 @@ links = [
           "http://www.specialfriedrice.net/",
           "http://www.meatspin.cc/"
         ]
+
+daddys = [
+           "Depado",
+           "krion"
+         ]
 
 basics = {
            "!nom":"is going to eat.",
