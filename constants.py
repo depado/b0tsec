@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-server = "irc.freenode.net"
-port = 6667
-botname = "b0tsec"
-chan = "#n0sec"
-
 try:
     with open("manifesto.txt") as f:
         manifesto = f.readlines()
@@ -31,7 +26,8 @@ activated_commands = [
   '!strpn',
   '!strapon',
   '!bj',
-  '!blowjob'
+  '!blowjob',
+  '!daddy'
 ]
 
 roulette_achievements = {
@@ -70,6 +66,11 @@ links = [
           "http://www.specialfriedrice.net/",
           "http://www.meatspin.cc/"
         ]
+
+daddys = [
+           "Depado",
+           "krion"
+         ]
 
 basics = {
            "!nom":"is going to eat.",

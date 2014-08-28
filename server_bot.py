@@ -14,6 +14,7 @@ import urllib.parse
 import time
 from datetime import datetime
 
+from settings import *
 from constants import *
 from functions import *
 
@@ -205,6 +206,11 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                     serv.privmsg(chan, "List of dirty links of #n0sec")
                     for link in links:
                         serv.privmsg(chan, link)
+
+            elif command == "!daddy":
+                serv.privmsg(chan, "My daddys are:")
+                for dad  in daddys:
+                    serv.privmsg(chan, dad)
 
             elif command == "!sentence":
                 url = "http://translate.google.com/translate_tts?tl=fr&q="
