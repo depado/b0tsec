@@ -53,6 +53,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         self.ctf       = pload('ctf.p')
         self.idle      = pload('idle.p')
         self.afk       = pload('afk.p')
+        self.dirty     = pload('dirty.p')
 
     def on_welcome(self, serv, ev):
         with open('ircpwd') as pwd:
@@ -113,6 +114,38 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                                 pdump(self.buglist, "buglist.p")
                             else:
                                 serv.privmsg(chan, "Describe your bug or request.")
+                        if command_args[0] == 'list':
+                            for user, bugs in self.buglist.items():
+                                serv.privmsg(chan, "{} :".format(user))
+                                for bug in bugs:
+                                    serv.privmsg(chan, bug)
+                    else:
+                        serv.privmsg(author, "Invalid argument. (add | list)")    
+                else:
+                    serv.privmsg(author, "This command takes an argument. (add | list)")
+
+            elif command in self.basic.keys():
+                serv.privmsg(chan, "{} {}".format(author, self.basic[command]))
+
+            elif command in self.extra.keys():
+                serv.privmsg(chan, "{}".format(self.extra[command]))
+
+            # Dirty links 
+            elif command == "!dirtylinks":
+                if len(command_args) > 0:
+                    if command_args[0] in ['add', 'list']:
+                        if command_args[0] == 'add':
+                            if len(command_args) > 1: 
+                                message = " ".join(command_args[1:])
+                                if author in self.buglist.keys():
+                                    self.buglist[author].append(message)
+                                else:
+                                    self.buglist[author] = [message]
+
+                                serv.privmsg(chan, "Dirty links registered. Thanks a lot, we greatly appreciate it.")
+                                pdump(self.buglist, "dirty.p")
+                            else:
+                                serv.privmsg(chan, "Add a dirty links, pretty please.")
                         if command_args[0] == 'list':
                             for user, bugs in self.buglist.items():
                                 serv.privmsg(chan, "{} :".format(user))
@@ -198,19 +231,23 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                 except Exception as e:
                     serv.privmsg(author, "Couldn't paste myself.")
 
-            elif command == "!dirtylinks":
-                if len(command_args) > 0:
-                    if command_args[0] in ['-r', '--random']:
-                        serv.privmsg(chan, links[random.randint(0, len(links))])
-                else:
-                    serv.privmsg(chan, "List of dirty links of #n0sec")
-                    for link in links:
-                        serv.privmsg(chan, link)
+            #elif command == "!dirtylinks":
+            #    if len(command_args) > 0:
+            #        if command_args[0] in ['-r', '--random']:
+            #            serv.privmsg(chan, links[random.randint(0, len(links))])
+            #    else:
+            #        serv.privmsg(chan, "List of dirty links of #n0sec")
+            #        for link in links:
+            #            serv.privmsg(chan, link)
 
             elif command == "!daddy":
                 serv.privmsg(chan, "My daddies are:")
                 for dad  in daddys:
                     serv.privmsg(chan, dad)
+
+            elif command == "!help":
+                for line in help: 
+                    serv.privmsg(chan,line)
 
             elif command == "!sentence":
                 url = "http://translate.google.com/translate_tts?tl=fr&q="

@@ -9,6 +9,7 @@ except Exception as e:
     print(e)
 
 activated_commands = [
+  '!help',
   '!bug', 
   '!femops',
   '!eightball',
@@ -61,16 +62,15 @@ eightball_list = [
                    "Outlook not so good",
                    "Very doubtful"
                  ]
-links = [
-          "http://www.hai2u.com/", 
-          "http://www.specialfriedrice.net/",
-          "http://www.meatspin.cc/"
-        ]
 
 daddys = [
            "Depado",
            "krion"
          ]
+
+help = [ 
+          "I need somebody, Help, not just anybody, Help, you know I need someone, Ahawaaa" 
+       ]
 
 basics = {
            "!nom":"is going to eat.",
