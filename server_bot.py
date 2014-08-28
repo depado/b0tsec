@@ -208,7 +208,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                         serv.privmsg(chan, link)
 
             elif command == "!daddy":
-                serv.privmsg(chan, "My daddys are:")
+                serv.privmsg(chan, "My daddies are:")
                 for dad  in daddys:
                     serv.privmsg(chan, dad)
 
