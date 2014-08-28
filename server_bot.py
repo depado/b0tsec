@@ -137,20 +137,20 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                         if command_args[0] == 'add':
                             if len(command_args) > 1: 
                                 message = " ".join(command_args[1:])
-                                if author in self.buglist.keys():
-                                    self.buglist[author].append(message)
+                                if author in self.dirty.keys():
+                                    self.dirty[author].append(message)
                                 else:
-                                    self.buglist[author] = [message]
+                                    self.dirty[author] = [message]
 
                                 serv.privmsg(chan, "Dirty links registered. Thanks a lot, we greatly appreciate it.")
-                                pdump(self.buglist, "dirty.p")
+                                pdump(self.dirty, "dirty.p")
                             else:
                                 serv.privmsg(chan, "Add a dirty links, pretty please.")
                         if command_args[0] == 'list':
-                            for user, bugs in self.buglist.items():
+                            for user, dirtylinks in self.dirty.items():
                                 serv.privmsg(chan, "{} :".format(user))
-                                for bug in bugs:
-                                    serv.privmsg(chan, bug)
+                                for link  in dirtylinks:
+                                    serv.privmsg(chan, link)
                     else:
                         serv.privmsg(author, "Invalid argument. (add | list)")    
                 else:
