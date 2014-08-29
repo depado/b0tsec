@@ -64,6 +64,12 @@ class BotModeration(irc.bot.SingleServerIRCBot):
     def on_kick(self, serv, ev):
         serv.join(chan)
 
+    def on_join(self, serv, ev):
+        if ev.source.nick == botname:
+            serv.privmsg(chan, "Salut revoilà le meilleur")
+        else:
+            serv.privmsg(chan, "Salut {}".format(ev.source.nick))
+
     def on_pubmsg(self, serv, ev):
         command      = ev.arguments[0].split(" ")[0]
         command_args = ev.arguments[0].split(" ")[1:] if len(ev.arguments[0].split(" ")) > 1 else []
