@@ -65,7 +65,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         serv.join(chan)
 
     def on_join(self, serv, ev):
-        if ev.source.nick == "b0tseb":
+        if ev.source.nick == botname:
             serv.privmsg(chan, "Salut revoilà le meilleur")
         else:
             serv.privmsg(chan, "Salut {}".format(ev.source.nick))
