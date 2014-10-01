@@ -131,21 +131,20 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                 serv.privmsg(chan, "{}".format(self.extra[command]))
 
             # Dirty links 
-            elif command == "!dirtylinks":
+            # WORK IN PROGRESS
+            elif command == "!link":
                 if len(command_args) > 0:
                     if command_args[0] in ['add', 'list']:
                         if command_args[0] == 'add':
                             if len(command_args) > 1: 
                                 message = " ".join(command_args[1:])
                                 if author in self.dirty.keys():
-                                    self.dirty[author].append(message)
-                                else:
-                                    self.dirty[author] = [message]
+                                    self.dirty.append(message)
 
                                 serv.privmsg(chan, "Dirty links registered. Thanks a lot, we greatly appreciate it.")
                                 pdump(self.dirty, "dirty.p")
                             else:
-                                serv.privmsg(chan, "Add a dirty links, pretty please.")
+                                serv.privmsg(chan, "This command requires an argument")
                         if command_args[0] == 'list':
                             for user, dirtylinks in self.dirty.items():
                                 serv.privmsg(chan, "{} :".format(user))
@@ -230,15 +229,6 @@ class BotModeration(irc.bot.SingleServerIRCBot):
                     serv.privmsg(author, "This is my code : {}".format(response.read().decode("utf-8")))
                 except Exception as e:
                     serv.privmsg(author, "Couldn't paste myself.")
-
-            #elif command == "!dirtylinks":
-            #    if len(command_args) > 0:
-            #        if command_args[0] in ['-r', '--random']:
-            #            serv.privmsg(chan, links[random.randint(0, len(links))])
-            #    else:
-            #        serv.privmsg(chan, "List of dirty links of #n0sec")
-            #        for link in links:
-            #            serv.privmsg(chan, link)
 
             elif command == "!daddy":
                 serv.privmsg(chan, "My daddies are:")
