@@ -35,7 +35,7 @@ def pload(filename):
 class BotModeration(irc.bot.SingleServerIRCBot):
 
     def __init__(self):
-        image_regex = re.compile(r"^https?:.*(jpg|png|gif)$")
+        self.image_regex = re.compile(r"^https?:.*(jpg|png|gif)$")
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], botname, botname)
 
         # Network related attributes
@@ -72,7 +72,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         author       = ev.source.nick
 
         for field in ev.arguments[0].split(" "):
-            if image_regex.match(field):
+            if self.image_regex.match(field):
                 if check_sanity(field):
                     serv.privmsg(chan, "WARN: This image is NSFW.")
 
