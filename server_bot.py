@@ -74,7 +74,7 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         for field in ev.arguments[0].split(" "):
             if image_regex.match(field):
                 if check_sanity(field):
-                    serv.privmsg(chan, "This image is NSFW.")
+                    serv.privmsg(chan, "WARN: This image is NSFW.")
 
         # Away from keyboard handler
         if author in self.afk.keys():
