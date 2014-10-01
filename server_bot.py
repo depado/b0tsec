@@ -12,6 +12,7 @@ import random
 import urllib.request
 import urllib.parse
 import time
+import re
 from datetime import datetime
 
 from settings import *
@@ -34,6 +35,7 @@ def pload(filename):
 class BotModeration(irc.bot.SingleServerIRCBot):
 
     def __init__(self):
+        image_regex = re.compile(r"^https?:.*(jpg|png|gif)$")
         irc.bot.SingleServerIRCBot.__init__(self, [(server, port)], botname, botname)
 
         # Network related attributes
@@ -68,6 +70,11 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         command      = ev.arguments[0].split(" ")[0]
         command_args = ev.arguments[0].split(" ")[1:] if len(ev.arguments[0].split(" ")) > 1 else []
         author       = ev.source.nick
+
+        for field in ev.arguments[0].split(" "):
+            if image_regex.match(field):
+                if check_sanity(field):
+                    serv.privmsg(chan, "This image is NSFW.")
 
         # Away from keyboard handler
         if author in self.afk.keys():

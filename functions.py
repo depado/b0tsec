@@ -5,7 +5,7 @@ import threading
 import urllib.request
 import urllib.parse
 import json
-
+import os
 
 def shorten(url):
     if not "http://" in url:
@@ -29,3 +29,12 @@ def shorten(url):
 
     except Exception as e:
         return False
+
+def check_sanity(url):
+    try:
+        local_filename, headers = urllib.request.urlretrieve(url)
+        nudity = nude.is_nude(local_filename)
+        os.remove(local_filename)
+        return nudity
+    except Exception, e:
+        print(e)
