@@ -71,10 +71,10 @@ class BotModeration(irc.bot.SingleServerIRCBot):
         command_args = ev.arguments[0].split(" ")[1:] if len(ev.arguments[0].split(" ")) > 1 else []
         author       = ev.source.nick
 
-        for field in ev.arguments[0].split(" "):
-            if self.image_regex.match(field):
-                if check_sanity(field):
-                    serv.privmsg(chan, "WARN: This image is NSFW.")
+        # for field in ev.arguments[0].split(" "):
+        #     if self.image_regex.match(field):
+        #         if check_sanity(field):
+        #             serv.privmsg(chan, "WARN: This image is NSFW.")
 
         # Away from keyboard handler
         if author in self.afk.keys():
