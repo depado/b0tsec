@@ -36,5 +36,5 @@ def check_sanity(url):
         nudity = nude.is_nude(local_filename)
         os.remove(local_filename)
         return nudity
-    except Exception, e:
+    except Exception as e:
         print(e)
