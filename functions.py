@@ -6,6 +6,7 @@ import urllib.request
 import urllib.parse
 import json
 import os
+import nude
 
 def shorten(url):
     if not "http://" in url:
